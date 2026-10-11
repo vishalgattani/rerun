@@ -40,4 +40,4 @@ cross-refs `[`ClassName`][]`, admonitions `!!! warning`, fenced code blocks, num
 
 Upstream generates the changelog from PR labels plus hand-written entries.
 For a user-facing feature, copy `docs/content/changelog/upcoming/_template.md` to `upcoming/<short-slug>.md` and fill it in (`type: highlight|misc|breaking|feature`).
-It costs nothing on `develop` and makes an upstream PR ready later.
+It keeps the feature documented the same way upstream documents its own.

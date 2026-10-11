@@ -23,14 +23,14 @@ The topic files above cover it; consult it directly only when they don't.
 
 ## Rules that always apply
 
-- Work on `develop` (or a `feat/<slug>` branch off it). Never commit to `main` — it is a pure mirror of upstream.
+- **Commit and push only to `develop` in `vishalgattani/rerun`.** No other branch (`main` is a pure mirror of upstream), and never anything to `rerun-io/rerun`: no pushes, PRs, issues or comments.
 - Never edit generated files (marked `DO NOT EDIT`). Change `crates/build/re_type_definitions/` and run `pixi run codegen`.
 - A crate may only depend on its own `crates/<layer>/` folder or a lower one — see `CLAUDE-architecture.md`.
 - Never panic in non-test code: no `unwrap`/`expect`/slice indexing on fallible paths. Errors are returned or logged, never ignored.
 - The viewer is immediate mode: every frame re-queries the store and redraws. No callbacks, no cached UI state.
 - Wasm builds must not spawn threads or touch files, env vars, `std::time`, or raw sockets.
 - After Rust changes run `pixi run rs-fmt`, then clippy and nextest on the crates you touched.
-- Commit as `digif33ls`. Push, open PRs, or touch upstream only when Vishal asks in that turn.
+- Commit as `digif33ls`. Push only when Vishal says "push" in that turn.
 
 ## Quick commands
 

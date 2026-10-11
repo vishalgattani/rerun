@@ -4,11 +4,12 @@ How this fork relates to upstream, and how to commit, sync and ship from it.
 
 ## Branches
 
-| Branch      | Role                                                                     | Who writes it                    |
-| ----------- | ------------------------------------------------------------------------ | -------------------------------- |
-| `main`      | Exact mirror of `rerun-io/rerun` `main`. Never commit here.               | The sync workflow only           |
-| `develop`   | Default branch. Our features, on top of upstream.                        | Us                               |
-| `feat/<slug>` | Optional short-lived branch per feature, merged back into `develop`.   | Us                               |
+| Branch    | Role                                                      | Who writes it          |
+| --------- | --------------------------------------------------------- | ---------------------- |
+| `main`    | Exact mirror of `rerun-io/rerun` `main`. Never commit here. | The sync workflow only |
+| `develop` | Default branch. All our work, on top of upstream.          | Us — the only branch we commit or push to |
+
+**Never create, commit to, or push any other branch, and never write to `rerun-io/rerun`** (no pushes, PRs, issues or comments).
 
 The only fork-specific files on `develop` are `CLAUDE.md`, the `CLAUDE-*.md` topic files, and `.github/workflows/sync-upstream.yml`.
 Upstream ships `CLAUDE.md` as a symlink to `AGENTS.md`; on `develop` it is a real file, and `AGENTS.md` is left untouched.
@@ -41,17 +42,18 @@ For generated code, take either side and re-run `pixi run codegen`.
 Upstream's workflows live in `.github/workflows/` and are not restricted to `rerun-io/rerun`, so they can run in this fork:
 `nightly.yml` is scheduled, `on_push_main.yml` and `cargo_shear.yml` run on pushes to `main` (which the sync makes with a PAT), and the `pull_request*` ones run on PRs.
 Most need rerun-io secrets and runners and will fail here.
-Disable the ones we don't want with `gh workflow disable <file> -R vishalgattani/rerun` rather than editing upstream's workflow files, which would conflict on every sync.
+`nightly.yml`, `on_push_main.yml` and `cargo_shear.yml` are disabled in the fork's Actions settings (`gh workflow list -R vishalgattani/rerun --all`).
+Disable others the same way (`gh workflow disable <file> -R vishalgattani/rerun`) rather than editing upstream's workflow files, which would conflict on every sync.
 
 ## Commits, pushes, PRs
 
 - Git identity is `digif33ls <digif33ls@gmail.com>` (set in this clone's `.git/config`, along with `credential.tokenEnv`).
 - Commit messages: `feat|fix|chore|docs(<crate-or-area>): <summary>`, e.g. `feat(re_view_bar_chart): stacked bars`.
-- Push only when Vishal says "push" in that turn.
-- PRs inside the fork (`feat/*` → `develop`): `gh pr create --draft -R vishalgattani/rerun --base develop`. Vishal merges.
-- **Never open a PR, issue or comment on `rerun-io/rerun` unless asked.** If asked, follow upstream's rules in `AGENTS.md` → "Contributing" (PR template, LLM disclosure, changelog label, one `docs/content/changelog/upcoming/<slug>.md` entry for user-facing changes), and branch from `main`, not `develop`, so the PR contains no fork-only files.
+- Commit directly on `develop`, then push `develop` only when Vishal says "push" in that turn: `git push origin develop`.
+- No feature branches and no PRs, in the fork or upstream.
+- Ignore the PR, labelling and review instructions in `AGENTS.md` → "Contributing"; they are for upstream contributors.
 
-## Keeping features upstreamable
+## Building features
 
-Keep each feature a self-contained set of commits on top of upstream, following upstream's style (`CLAUDE-style.md`), so it can be cherry-picked onto a branch off `main` for an upstream PR later.
+Keep each feature a self-contained set of commits on `develop` that follows upstream's style (`CLAUDE-style.md`), so upstream merges into `develop` stay easy.
 Prefer extension points that need no core changes when they fit: a custom view or visualizer (`examples/rust/custom_view`), a custom importer (`examples/rust/custom_importer`, or an external `rerun-importer-*` executable), or a blueprint built from the SDK.
